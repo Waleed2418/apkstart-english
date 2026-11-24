@@ -1,4 +1,4 @@
-# ApkStart — English interface
+﻿# ApkStart — English interface
 
 Unofficial English translation for [ApkStart](https://github.com/RoutineMiku/apkstart) 0.6.3
 (the Windows Android app runner published on the Microsoft Store as `RoutineMiku.ApkStart`).
@@ -23,7 +23,7 @@ desktop shortcut, and switch to the official build once upstream merges i18n
 ## Install
 
 ```powershell
-git clone https://github.com/<owner>/apkstart-english.git
+git clone https://github.com/Waleed2418/apkstart-english.git
 cd apkstart-english
 powershell -ExecutionPolicy Bypass -File .\install.ps1
 ```
