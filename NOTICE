@@ -1,0 +1,32 @@
+NOTICE
+======
+
+This repository contains an unofficial English translation layer for ApkStart.
+
+Upstream project
+----------------
+ApkStart
+https://github.com/RoutineMiku/apkstart
+Copyright (c) RoutineMiku
+License: MIT (https://github.com/RoutineMiku/apkstart/blob/main/LICENSE)
+
+Files derived from ApkStart:
+- i18n/manual.en.html (translated from the upstream built-in manual)
+- i18n/en-merged.json, i18n/en-data.js (dictionary based on the Chinese UI strings,
+  with translations from upstream PR #84 by Chomper9981, extended here)
+- patch/example-*.json (translated copies of the bundled driver examples)
+
+The installer copies ApkStart from the user's own Microsoft Store installation. No
+ApkStart binaries are redistributed by this repository.
+
+Translation contributors
+------------------------
+- English dictionary seed: PR #84 "feat(i18n): 界面多语言 English / Tiếng Việt / 中文"
+  by Chomper9981 (https://github.com/RoutineMiku/apkstart/pull/84)
+- Additional 0.6.3 strings, manual translation, patched renderer strings: this project
+
+License of this repository: MIT (see LICENSE).
+
+ApkStart and this translation are provided without warranty. Use at your own risk;
+the installer writes only to the target folder chosen by the user and to the desktop
+shortcut.

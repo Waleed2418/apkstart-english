@@ -1,0 +1,25 @@
+{
+  "format": "apkstart-driver/1",
+  "id": "example-amd-igpu-swangle",
+  "name": "AMD integrated GPU · use swangle rendering (example)",
+  "version": "1.0.0",
+  "author": "ApkStart",
+  "description": "On some AMD integrated GPUs with older drivers, -gpu host passes the emulator self-test but the guest process crashes shortly after boot (the log only shows \"AEHD is operational\"). Pinning the renderer to swangle works around it at a small frame-rate cost.",
+  "enabled": false,
+  "priority": 0,
+  "match": {
+    "platform": [
+      "win32"
+    ],
+    "gpuVendor": [
+      "amd"
+    ]
+  },
+  "effect": {
+    "gpuMode": "swangle",
+    "notes": [
+      "If the picture is fine but games are slow, set Picture quality to 540x960 in Settings",
+      "Once you confirm it works, set enabled to true (or delete that line) to apply it automatically"
+    ]
+  }
+}

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ApkStart 产品使用手册与问题解决方案</title>
+<style>
+:root{--bg:#ffffff;--fg:#1f2328;--mut:#57606a;--line:#d0d7de;--code:#eff1f3;--accent:#0969da;--accent-soft:#ddf4ff;--warn:#9a6700;--warn-bg:#fff8c5;--head:#f6f8fa;--tbl:#f6f8fa}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;color:var(--fg);background:var(--bg)}
+.wrap{display:flex;max-width:1180px;margin:0 auto}
+aside{position:sticky;top:0;height:100vh;overflow:auto;width:280px;flex:0 0 280px;border-right:1px solid var(--line);padding:24px 18px;background:var(--head)}
+aside h2{font-size:15px;margin:0 0 14px;letter-spacing:.5px}
+aside a{display:block;color:var(--mut);text-decoration:none;padding:3px 8px;border-radius:6px;font-size:13.5px;line-height:1.45}
+aside a:hover{background:var(--accent-soft);color:var(--accent)}
+#tocSearch{width:100%;margin-bottom:12px;padding:7px 9px;border:1px solid var(--line);border-radius:6px;font:13px/1.4 inherit;background:#fff;color:var(--fg)}
+#tocSearch:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.toc-l3{padding-left:22px!important;font-size:12.5px!important;color:#8c959f!important}
+main{flex:1;min-width:0;padding:40px 48px 80px}
+h1{font-size:30px;margin:0 0 8px;padding-bottom:16px;border-bottom:2px solid var(--line)}
+h2{font-size:23px;margin:42px 0 16px;padding-bottom:8px;border-bottom:1px solid var(--line);scroll-margin-top:16px}
+h3{font-size:18px;margin:30px 0 12px;scroll-margin-top:16px}
+h4{font-size:16px;margin:22px 0 8px}
+p{margin:12px 0}
+a{color:var(--accent)}
+code{background:var(--code);padding:2px 6px;border-radius:6px;font:13.5px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+pre{background:var(--code);padding:16px 18px;border-radius:8px;overflow:auto;border:1px solid var(--line)}
+pre code{background:none;padding:0}
+blockquote{margin:16px 0;padding:10px 16px;border-left:4px solid var(--warn);background:var(--warn-bg);color:#633c01;border-radius:0 8px 8px 0}
+blockquote p{margin:0}
+ul,ol{margin:12px 0;padding-left:26px}
+li{margin:5px 0}
+hr{border:0;border-top:1px solid var(--line);margin:28px 0}
+.tw{overflow:auto;margin:16px 0}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{background:var(--tbl);font-weight:600;white-space:nowrap}
+tbody tr:nth-child(even){background:#fbfcfd}
+.btnbar{position:fixed;right:22px;bottom:22px;display:flex;gap:8px}
+.btnbar button{border:1px solid var(--line);background:#fff;color:var(--fg);border-radius:8px;padding:9px 14px;font-size:13px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.btnbar button:hover{border-color:var(--accent);color:var(--accent)}
+@media (max-width:880px){aside{display:none}main{padding:24px 20px 60px}h1{font-size:25px}}
+@media print{aside,.btnbar{display:none}main{padding:0;max-width:none}h2{page-break-after:avoid}table,pre,blockquote{page-break-inside:avoid}a{color:inherit;text-decoration:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<aside><h2>Table of contents</h2>
+<input id="tocSearch" type="search" placeholder="筛选目录（Ctrl+F 全文搜索）" autocomplete="off" />
+<div id="tocList"><a class="toc-l2" href="#目录">Table of contents</a>
+<a class="toc-l2" href="#1-30-秒看懂-apkstart">1. Understand ApkStart in 30 seconds</a>
+<a class="toc-l2" href="#2-安装与首次启动">2. Installation and first startup</a>
+<a class="toc-l3" href="#2-1-选择适合你的版本">2.1 Pick the build that suits you</a>
+<a class="toc-l3" href="#2-2-首次启动会发生什么">2.2 What happens when you start it for the first time</a>
+<a class="toc-l2" href="#3-日常使用">3. Daily use</a>
+<a class="toc-l3" href="#3-1-安装应用">3.1 Install the application</a>
+<a class="toc-l3" href="#3-2-打开应用">3.2 Open the application</a>
+<a class="toc-l3" href="#3-3-窗口与显示">3.3 Window and display</a>
+<a class="toc-l3" href="#3-4-快捷键">3.4 Shortcut keys</a>
+<a class="toc-l3" href="#3-5-文件互通-windows-安卓">3.5 File interoperability (Windows ↔ Android)</a>
+<a class="toc-l3" href="#3-6-设置页导航">3.6 Settings navigation</a>
+<a class="toc-l3" href="#3-7-在线更新">3.7 Online update</a>
+<a class="toc-l2" href="#4-理解三个核心概念-看懂报错的关键">4. Understand the three core concepts (the key to understanding error reporting)</a>
+<a class="toc-l3" href="#4-1-运行时-系统镜像">4.1 Runtime/System Image</a>
+<a class="toc-l3" href="#4-2-硬件加速">4.2 Hardware acceleration</a>
+<a class="toc-l3" href="#4-3-arm-转译层">4.3 ARM translation layer</a>
+<a class="toc-l2" href="#5-遇到问题先做这一步-体检与自动检测">5. First step when something goes wrong: checkup and automatic diagnostics</a>
+<a class="toc-l3" href="#5-1-本机体检-自动配置">5.1 Machine checkup · automatic configuration</a>
+<a class="toc-l3" href="#5-2-自动检测-自动-debug">5.2 Automatic diagnostics (auto-debug)</a>
+<a class="toc-l3" href="#5-3-导出诊断报告">5.3 Export diagnostic report</a>
+<a class="toc-l3" href="#5-4-内置使用手册与自动教程">5.4 Built-in manual and automatic tutorials</a>
+<a class="toc-l2" href="#6-常见问题解决方案">6. Common problems and solutions</a>
+<a class="toc-l3" href="#6-1-提示-未启用硬件加速-开机很慢">6.1 "Hardware acceleration not enabled" / very slow boot</a>
+<a class="toc-l3" href="#6-2-安装失败-install_failed_">6.2 Installation failed (INSTALL_FAILED_*)</a>
+<a class="toc-l3" href="#6-3-系统镜像没有-arm-转译层-arm-应用装不上或闪退">6.3 The system image does not have an ARM translation layer/ARM applications cannot be installed or crash</a>
+<a class="toc-l3" href="#6-4-adb-未授权-允许-usb-调试">6.4 adb unauthorized (allow USB debugging)</a>
+<a class="toc-l3" href="#6-5-双击图标没反应-一直转圈-出现带旋转按钮的窗口">6.5 Icon does nothing / endless spinner / window with a rotating button</a>
+<a class="toc-l3" href="#6-6-其它启动类问题速查表">6.6 Quick reference: other startup problems</a>
+<a class="toc-l3" href="#6-7-应用没有声音-声音很小">6.7 No sound / very low volume in apps</a>
+<a class="toc-l3" href="#6-8-商店版启动失败-0xc0000135-dll-加载失败">6.8 Store version fails to start / 0xC0000135 (DLL load failure)</a>
+<a class="toc-l2" href="#7-命令行参考">7. Command line reference</a>
+<a class="toc-l2" href="#8-数据与目录说明">8. Data and directory layout</a>
+<a class="toc-l2" href="#9-获取帮助与反馈">9. Get help and feedback</a></div>
+</aside>
+<main>
+<h1 id="apkstart-产品使用手册与问题解决方案">ApkStart Product Manual and Troubleshooting Guide</h1>
+<blockquote>Version: v0.6.3 · Platform: Windows 10/11 x64 · Updated: 2026-11-19 ApkStart is an Android app runner for Windows: Let Android apps be installed like native Windows software, appear on the desktop, and double-click to use.  This manual first teaches you how to use it, and then gives you solutions that can be followed according to "symptoms".  All steps correspond to real buttons and menus in the software.</blockquote>
+<hr/>
+<h2 id="目录">Table of contents</h2>
+<ol><li>Understand ApkStart in 30 seconds</li><li>Installation and first startup</li><li>Daily use</li><li>Understand the three core concepts (the key to understanding error reporting)</li><li>First step when something goes wrong: checkup and automatic diagnostics</li><li>Common problems and solutions</li></ol>
+<ul><li>6.1 "Hardware acceleration not enabled" / very slow boot</li><li>6.2 Installation failed (INSTALL_FAILED_*)</li><li>6.3 The system image does not have an ARM translation layer/ARM applications cannot be installed or crash</li><li>6.4 adb unauthorized (allow USB debugging)</li><li>6.5 Icon does nothing / endless spinner / window with a rotating button</li><li>6.6 Quick reference: other startup problems</li><li>6.7 No sound / very low volume in apps</li><li>6.8 Store version fails to start / 0xC0000135 (DLL load failure)</li></ul>
+<ol><li>Command line reference</li><li>Data and directory layout</li><li>Get help and feedback</li></ol>
+<hr/>
+<h2 id="1-30-秒看懂-apkstart">1. Understand ApkStart in 30 seconds</h2>
+<pre><code>ApkStart.exe                          open the main window
+ApkStart.exe &lt;path\to.apk&gt;            install an APK
+ApkStart.exe --launch &lt;package name&gt;  launch the app directly (this is what desktop shortcuts use)</code></pre>
+<hr/>
+<h2 id="8-数据与目录说明">8. Data and directory layout</h2>
+<div class="tw"><table><thead><tr><th>use</th><th>Location</th></tr></thead><tbody><tr><td>Runtime (adb/emulator/mirror)</td><td>Built-in with the package, or %APPDATA%\apkstart\runtime (light version)</td></tr><tr><td>Expanded system image</td><td><code>%APPDATA%\apkstart\system-images</code></td></tr><tr><td>AVD/Installed Apps/Snapshots</td><td><code>%APPDATA%\apkstart\avd</code></td></tr><tr><td>application icon</td><td><code>%APPDATA%\apkstart\icons\&lt;package name&gt;.ico</code></td></tr><tr><td>Setup and Checklist</td><td><code>%APPDATA%\ApkStart\settings.json</code> / <code>apps.json</code></td></tr><tr><td>Operation log/diagnostic report</td><td><code>%APPDATA%\ApkStart\logs\</code></td></tr><tr><td>Windows ↔ Android shared directory</td><td><code>%USERPROFILE%\ApkStartShared</code> ↔ <code>/sdcard/ApkStartShared</code></td></tr></tbody></table></div>
+<blockquote>"Reset Android Data" only clears the user data layer, retaining system images and APK files; updating applications will not lose runtime, installed applications and snapshots.  It is recommended to reserve sufficient space on the C drive: the total of mirror expansion + data partition + snapshot can reach several GB.  Insufficient space will cause Installation/boot failure.</blockquote>
+<hr/>
+<h2 id="9-获取帮助与反馈">9. Get help and feedback</h2>
+<p>Please attach three things when reporting a problem, which can greatly speed up positioning:</p>
+<ol><li>Diagnostic report: Settings → Diagnosis and Repair → Export diagnostic report;</li><li>The last 20 lines of app.log: %APPDATA%\ApkStart\logs\app.log;</li><li>Your version and form: such as "Store Edition 0.6.3" or "Full Portable Edition 0.6.3".</li></ol>
+<ul><li>GitHub：&lt;https://github.com/RoutineMiku/apkstart&gt;（Issues / Releases）</li><li>Gitee：&lt;https://gitee.com/daily-miku/apkstart&gt;</li></ul>
+<hr/>
+<p>*This manual corresponds to v0.6.3 and will be updated with the version.  If the interface copy is slightly different from this, the actual display in the software shall prevail.  *</p>
+</main>
+</div>
+<div class="btnbar"><button onclick="window.print()">Print / Save as PDF</button></div>
+<script src="../../i18n/en-data.js"></script>
+<script src="../../i18n/i18n-core.js"></script>
+<script src="../../i18n/i18n-dom.js"></script>
+<script>
+(function () {
+  var input = document.getElementById('tocSearch');
+  var links = Array.prototype.slice.call(document.querySelectorAll('#tocList a'));
+  if (!input) return;
+  input.addEventListener('input', function () {
+    var q = input.value.trim().toLowerCase();
+    links.forEach(function (a) { a.hidden = !!q && a.textContent.toLowerCase().indexOf(q) < 0; });
+  });
+  // 自动教程按锚点打开时，把命中的目录项滚进视野
+  if (location.hash) {
+    var hit = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (hit) setTimeout(function () { hit.scrollIntoView({ block: 'start' }); }, 80);
+  }
+}());
+</script>
+</body>
+</html>
