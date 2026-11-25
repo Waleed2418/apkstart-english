@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 /*
- * Applies the English interface layer to a copied ApkStart 0.6.3 app tree.
+ * Applies the English interface layer to an ApkStart 0.6.3-0.6.4 app tree.
  *
  * Usage:
- *   node patch/apply.js "C:\path\to\ApkStartEN"
+ *   node patch/apply.js "C:\path\to\ApkStartEN"   # copied Microsoft Store build
+ *   node patch/apply.js "C:\path\to\apkstart"     # local source checkout
  *
- * The target must be a copy of the Store package's "app" directory
- * (ApkStart.exe, resources\app, ...). The script is idempotent: running it
- * twice is safe.
+ * The target is auto-detected:
+ *   - resources\app\src\main.js -> the parent is a copied Store app ("packaged")
+ *   - src\main.js               -> the target itself is a source checkout
+ * The script is idempotent: running it twice is safe.
  */
 'use strict';
 
@@ -16,7 +18,26 @@ const path = require('path');
 
 const REPO = path.resolve(__dirname, '..');
 const ROOT = path.resolve(process.argv[2] || 'C:\\Users\\Wsali\\ApkStartEN');
-const APP = path.join(ROOT, 'resources', 'app');
+
+function detectLayout(root) {
+  if (fs.existsSync(path.join(root, 'resources', 'app', 'src', 'main.js'))) {
+    return { app: path.join(root, 'resources', 'app'), mode: 'packaged' };
+  }
+  if (fs.existsSync(path.join(root, 'src', 'main.js'))) {
+    return { app: root, mode: 'source' };
+  }
+  return null;
+}
+
+const layout = detectLayout(ROOT);
+if (!layout) {
+  console.error('ERROR: ' + ROOT + ' is neither a copied Store app '
+    + '(resources\\app\\src\\main.js) nor an apkstart source checkout (src\\main.js).');
+  process.exit(1);
+}
+
+const APP = layout.app;
+const PACKAGED = layout.mode === 'packaged';
 const problems = [];
 const done = [];
 
@@ -80,20 +101,26 @@ replaceOnce('src/main.js', 'main.js loads i18n-main',
   "const path = require('path');\n",
   "const path = require('path');\nrequire('../i18n/i18n-main');\n");
 
-replaceOnce('src/main.js', 'main.js separate userData dir',
-  "const manual = require('./core/manual');\n",
-  "const manual = require('./core/manual');\n"
-  + "app.setPath('userData', path.join(app.getPath('appData'), 'ApkStartEN'));\n");
+if (PACKAGED) {
+  replaceOnce('src/main.js', 'main.js separate userData dir',
+    "const manual = require('./core/manual');\n",
+    "const manual = require('./core/manual');\n"
+    + "app.setPath('userData', path.join(app.getPath('appData'), 'ApkStartEN'));\n");
+}
 
 // 5. Share the Store data directory so apps and settings stay in one place ---
-replaceOnce('src/core/store.js', 'store.js shared data dir',
-  "const DATA_DIR = STORE_BUILD\n"
-  + "  ? path.join(os.homedir(), 'ApkStart', 'data')\n"
-  + "  : path.join(process.env.APPDATA || path.join(os.homedir(), 'AppData', 'Roaming'), 'apkstart');",
-  "const SHARED_DATA_DIR = path.join(os.homedir(), 'ApkStart', 'data');\n"
-  + "const DATA_DIR = (STORE_BUILD || fs.existsSync(SHARED_DATA_DIR))\n"
-  + "  ? SHARED_DATA_DIR\n"
-  + "  : path.join(process.env.APPDATA || path.join(os.homedir(), 'AppData', 'Roaming'), 'apkstart');");
+// A source checkout already uses %APPDATA%\apkstart, so leave its data and
+// runtime layout alone. The copied Store app must opt into the shared folder.
+if (PACKAGED) {
+  replaceOnce('src/core/store.js', 'store.js shared data dir',
+    "const DATA_DIR = STORE_BUILD\n"
+    + "  ? path.join(os.homedir(), 'ApkStart', 'data')\n"
+    + "  : path.join(process.env.APPDATA || path.join(os.homedir(), 'AppData', 'Roaming'), 'apkstart');",
+    "const SHARED_DATA_DIR = path.join(os.homedir(), 'ApkStart', 'data');\n"
+    + "const DATA_DIR = (STORE_BUILD || fs.existsSync(SHARED_DATA_DIR))\n"
+    + "  ? SHARED_DATA_DIR\n"
+    + "  : path.join(process.env.APPDATA || path.join(os.homedir(), 'AppData', 'Roaming'), 'apkstart');");
+}
 
 // 6. Diagnostics summary -----------------------------------------------------
 replaceOnce('src/core/doctor.js', 'doctor.js DLL title',
@@ -143,12 +170,20 @@ for (const f of ['example-amd-igpu-swangle.json', 'example-intel-igpu-software.j
 
 // 9. Report ------------------------------------------------------------------
 console.log('Target : ' + ROOT);
+console.log('App    : ' + APP + ' (' + (PACKAGED ? 'Microsoft Store copy' : 'source checkout') + ')');
+if (!PACKAGED) {
+  console.log('Skipped: Store-only userData and shared data-dir patches (keeps %APPDATA%\\apkstart)');
+}
 console.log('Applied: ' + done.length + ' step(s)');
 for (const d of done) console.log('  ok  ' + d);
 if (problems.length) {
   console.error('\nFAILED steps:');
   for (const p of problems) console.error('  !!  ' + p);
-  console.error('\nThis build is not fully patched. Check the ApkStart version (expected 0.6.3).');
+  console.error('\nThis build is not fully patched. Check the ApkStart version (expected 0.6.3-0.6.4).');
   process.exit(1);
 }
-console.log('\nAll steps applied. Start ' + path.join(ROOT, 'ApkStart.exe'));
+if (PACKAGED) {
+  console.log('\nAll steps applied. Start ' + path.join(ROOT, 'ApkStart.exe'));
+} else {
+  console.log('\nAll steps applied. Start the app from ' + ROOT + ' with: npm start');
+}
